@@ -25,8 +25,26 @@ export class UserNotExist extends HttpException {
     }
 }
 
+export class AdminNotExist extends HttpException {
+    constructor() {
+        super(`Admin doesn't exist.`, HttpStatus.BAD_REQUEST);
+    }
+}
+
 export class InvalidPassword extends HttpException {
     constructor() {
-      super('Incorrect password. Please try again.', HttpStatus.UNAUTHORIZED);
+        super('Incorrect password. Please try again.', HttpStatus.UNAUTHORIZED);
     }
-  }
+}
+
+export class UserNotApproved extends HttpException {
+    constructor() {
+        super(`User has not been approved by the admin yet.`, HttpStatus.FORBIDDEN);
+    }
+}
+
+export class UserRejected extends HttpException {
+    constructor() {
+        super(`Your request has been rejected by the admin.`, HttpStatus.FORBIDDEN);
+    }
+}

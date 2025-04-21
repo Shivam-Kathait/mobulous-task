@@ -14,7 +14,7 @@ async function bootstrap() {
     .setTitle('mobulous-task')
     .setDescription('Task API description')
     .setVersion('1.0')
-    .addTag('integrai')
+    .addTag('mobulous-task')
     .addBearerAuth({ type: 'http', name: 'authorization', in: 'header' }, 'authorization')
     .addServer('http://localhost:3009', 'local server')
     .build();

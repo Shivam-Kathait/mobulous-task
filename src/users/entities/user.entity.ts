@@ -1,6 +1,6 @@
 import { HydratedDocument } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Role } from "src/common/utils";
+import { ApprovalStatus, Role, Status } from "src/common/utils";
 
 @Schema({ versionKey: false })
 export class Users {
@@ -20,11 +20,18 @@ export class Users {
     @Prop({ type: String })
     password: string;
 
+    // should approved from admin then user can login
+    @Prop({ type: String, enum: ApprovalStatus, default: ApprovalStatus.PENDING })
+    adminApprovalStatus: ApprovalStatus;
+    
+    @Prop({ type: String, default: Status.ACTIVE, enum: Status })
+    status: string;
+
     @Prop({ type: String, default: Role.USER, enum: Role })
     role: string;
 
     @Prop({ type: Date })
-    createdAt: string;
+    createdAt: Date;
 }
 
 export type UsersDocument = HydratedDocument<Users>;

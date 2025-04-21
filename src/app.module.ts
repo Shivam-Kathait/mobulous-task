@@ -5,6 +5,11 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { AdminModule } from './admin/admin.module';
+import { JwtStrategy } from './authentication/strategies/jwt.strategy';
+import { ProductModule } from './product/product.module';
+import { WarehouseModule } from './warehouse/warehouse.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
@@ -23,9 +28,13 @@ import { JwtModule } from '@nestjs/jwt';
         signOptions: { expiresIn: configService.get<string>('JWT_ACCESS_EXPIRY', '1d') },
       }),
     }),
-    UsersModule
+    UsersModule,
+    AdminModule,
+    ProductModule,
+    WarehouseModule,
+    InventoryModule
   ],
   controllers: [AppController],
-  providers: [AppService, ConfigService],
+  providers: [AppService, ConfigService, JwtStrategy],
 })
 export class AppModule { }

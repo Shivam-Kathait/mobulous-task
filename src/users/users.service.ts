@@ -6,7 +6,7 @@ import { Users, UsersDocument } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { Query } from 'src/common/interfaces';
 import { CommonServices } from 'src/common/commn-service';
-import { Role } from 'src/common/utils';
+import { ApprovalStatus, Role, Status } from 'src/common/utils';
 import { AuthService } from 'src/authentication/auth.service';
 import * as Errors from "../error-handler/error-service";
 
@@ -40,8 +40,7 @@ export class UsersService {
         created_at: Date.now()
       }
       let user = await this.userModel.create(userData);
-      let access_token = await this.authService.generateToken(user._id, user.role);
-      let data = { message: "Signup SuccesFully", access_token }
+      let data = { message: "Signup SuccesFully" }
       return data
     } catch (error) {
       throw error
@@ -53,6 +52,7 @@ export class UsersService {
       let { email, phone_number, password } = dto;
       if (!email && !phone_number) throw new Errors.MissingLoginCreds();
       const query = {
+        Status: { $ne: Status.DELETED },
         $or: [
           email ? { email: email.toLowerCase() } : null,
           phone_number ? { phone_number: phone_number } : null,
@@ -61,6 +61,8 @@ export class UsersService {
       let projection = {}
       let is_user = await this.userModel.findOne(query, projection, this.option);
       if (!is_user) throw new Errors.UserNotExist();
+      if (is_user.adminApprovalStatus === ApprovalStatus.PENDING) throw new Errors.UserNotApproved();
+      if (is_user.adminApprovalStatus === ApprovalStatus.REJECT) throw new Errors.UserNotApproved();
       let isPassword = await this.commonServices.compareHash(password, is_user.password);
       if (!isPassword) throw new Errors.InvalidPassword();
       let access_token = await this.authService.generateToken(is_user._id, is_user.role);

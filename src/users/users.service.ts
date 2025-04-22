@@ -12,7 +12,7 @@ import * as Errors from "../error-handler/error-service";
 
 @Injectable()
 export class UsersService {
-  private option = { lean: true } as const;
+  private option = { lean: true, sort: { _id: -1 } } as const;
 
   constructor(
     private readonly configService: ConfigService,
@@ -49,7 +49,7 @@ export class UsersService {
 
   async login(dto: LoginDto) {
     try {
-      let { email, phone_number, password } = dto;
+      let { email, phone_number, password, latitude, longitude } = dto;
       if (!email && !phone_number) throw new Errors.MissingLoginCreds();
       const query = {
         Status: { $ne: Status.DELETED },
@@ -64,6 +64,13 @@ export class UsersService {
       if (is_user.adminApprovalStatus === ApprovalStatus.PENDING) throw new Errors.UserNotApproved();
       if (is_user.adminApprovalStatus === ApprovalStatus.REJECT) throw new Errors.UserNotApproved();
       let isPassword = await this.commonServices.compareHash(password, is_user.password);
+      let update = {
+        location: {
+          type: 'Point',
+          coordinates: [parseFloat(longitude), parseFloat(latitude)] // GeoJSON format: [lng, lat]
+        },
+      }
+      await this.userModel.updateOne(query, update)
       if (!isPassword) throw new Errors.InvalidPassword();
       let access_token = await this.authService.generateToken(is_user._id, is_user.role);
       let data = { message: "Login SuccesFully", access_token }

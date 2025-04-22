@@ -1,14 +1,16 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
+import { Product } from "src/product/entities/product.entity";
 import { Warehouse } from "src/warehouse/entities/warehouse.entity";
 
 @Schema({ versionKey: false })
-export class Product {
-    @Prop({ type: String })
-    name: string;
-
+export class Order {
+    
     @Prop({ type: Types.ObjectId, ref: Warehouse.name, required: true })
     warehouse_id: Types.ObjectId
+
+    @Prop({ type: Types.ObjectId, ref: Product.name, required: true })
+    product_id: Types.ObjectId
 
     @Prop({ type: Number, default: 0 })
     price: number;
@@ -16,12 +18,9 @@ export class Product {
     @Prop({ type: Number, default: 0 })
     quantity: number;
 
-    @Prop({ type: String })
-    description: string;
-
     @Prop({ type: Date })
     createdAt: Date;
 }
 
-export type ProductDocument = HydratedDocument<Product>
-export const ProductSchema = SchemaFactory.createForClass(Product)
+export type OrderDocument = HydratedDocument<Order>
+export const OrderSchema = SchemaFactory.createForClass(Order)

@@ -23,12 +23,25 @@ export class Users {
     // should approved from admin then user can login
     @Prop({ type: String, enum: ApprovalStatus, default: ApprovalStatus.PENDING })
     adminApprovalStatus: ApprovalStatus;
-    
+
     @Prop({ type: String, default: Status.ACTIVE, enum: Status })
     status: string;
 
     @Prop({ type: String, default: Role.USER, enum: Role })
     role: string;
+
+    @Prop({
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            required: true
+        }
+    })
+    location: { type: string, coordinates: number[] };
 
     @Prop({ type: Date })
     createdAt: Date;
@@ -36,3 +49,4 @@ export class Users {
 
 export type UsersDocument = HydratedDocument<Users>;
 export const UsersSchema = SchemaFactory.createForClass(Users);
+UsersSchema.index({ location: '2dsphere' });

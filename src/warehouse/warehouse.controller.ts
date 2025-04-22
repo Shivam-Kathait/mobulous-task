@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
-import { CreateWarehouseDto } from './dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { CreateWarehouseDto, Listing } from './dto/create-warehouse.dto';
+import { ApiBearerAuth, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { Roles } from 'src/authentication/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/authentication/guards/roles.guard';
+import { Role } from 'src/common/utils';
 
 @Controller('warehouse')
 export class WarehouseController {
-  constructor(private readonly warehouseService: WarehouseService) {}
+  constructor(private readonly warehouseService: WarehouseService) { }
 
+  /**
+ * Handles the admin warehouse request.
+ *
+ * @param {CreateWarehouseDto} dto - Data Transfer Object containing warehouse details.
+ * @returns {Promise<any>} - Result from the warehouse service.
+ */
+  @ApiBearerAuth("authorization")
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
+  @ApiOperation({ summary: `Admin create warehouse Api` })
   @Post()
-  create(@Body() createWarehouseDto: CreateWarehouseDto) {
-    return this.warehouseService.create(createWarehouseDto);
+  createWarehouse(@Body() dto: CreateWarehouseDto): Promise<any> {
+    return this.warehouseService.createWarehouse(dto); 
   }
 
-  @Get()
-  findAll() {
-    return this.warehouseService.findAll();
-  }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.warehouseService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
-    return this.warehouseService.update(+id, updateWarehouseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.warehouseService.remove(+id);
+  /**
+ * Handles the admin warehouse request.
+ *
+ * @param {Listing} dto - Data Transfer Object containing warehouse listing details.
+ * @returns {Promise<any>} - Result from the warehouse service.
+ */
+  @ApiBearerAuth("authorization")
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
+  @ApiOperation({ summary: `Admin warehouse listing Api` })
+  @Get('listing')
+  warehouseListing(@Query() dto: Listing): Promise<any> {
+    return this.warehouseService.warehouseListing(dto);
   }
 }

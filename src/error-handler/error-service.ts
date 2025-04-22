@@ -48,3 +48,9 @@ export class UserRejected extends HttpException {
         super(`Your request has been rejected by the admin.`, HttpStatus.FORBIDDEN);
     }
 }
+
+export class NoProductFound extends HttpException {
+    constructor() {
+        super(`No available products found in the warehouse.`, HttpStatus.FORBIDDEN);
+    }
+}

@@ -52,4 +52,14 @@ export class LoginDto {
   @IsNotEmpty({ message: 'password is required' })
   @IsString()
   password: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'latitude is required' })
+  @IsString()
+  latitude: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'longitude is required' })
+  @IsString()
+  longitude: string;
 }

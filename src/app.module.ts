@@ -9,7 +9,7 @@ import { AdminModule } from './admin/admin.module';
 import { JwtStrategy } from './authentication/strategies/jwt.strategy';
 import { ProductModule } from './product/product.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
-import { InventoryModule } from './inventory/inventory.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { InventoryModule } from './inventory/inventory.module';
     AdminModule,
     ProductModule,
     WarehouseModule,
-    InventoryModule
+    OrderModule
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService, JwtStrategy],

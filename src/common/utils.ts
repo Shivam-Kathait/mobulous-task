@@ -14,3 +14,12 @@ export enum Status {
     ACTIVE = 'ACTIVE',
     DELETED = 'DELETED',
 }
+
+export enum OrderStatus {
+    APPROVED = 'APPROVED',
+    REJECT = 'REJECT',
+}
+
+export enum NotificationType {
+    LOW_STOCK = 'LOW_STOCK',
+}

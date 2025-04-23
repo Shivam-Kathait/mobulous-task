@@ -54,3 +54,15 @@ export class NoProductFound extends HttpException {
         super(`No available products found in the warehouse.`, HttpStatus.FORBIDDEN);
     }
 }
+
+export class LowProductQuantity extends HttpException {
+    constructor() {
+        super(`Requested quantity is more than available stock.`, HttpStatus.FORBIDDEN);
+    }
+}
+
+export class NoOrderFound extends HttpException {
+    constructor() {
+        super(`No order found.`, HttpStatus.FORBIDDEN);
+    }
+}

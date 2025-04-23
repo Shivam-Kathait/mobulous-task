@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AdminLoginDto, ApprovalDto, Listing, ResponseUserDto, UpdateUserStatusDto } from './dto/create-admin.dto';
+import { AdminLoginDto, ApprovalDto, Listing, NotificationListing, ResponseUserDto, UpdateUserStatusDto } from './dto/create-admin.dto';
 import { ConfigService } from '@nestjs/config';
 import { CommonServices } from 'src/common/commn-service';
 import { Role } from 'src/common/utils';
@@ -10,6 +10,7 @@ import * as Errors from "../error-handler/error-service";
 import { AuthService } from 'src/authentication/auth.service';
 import { Query } from 'src/common/interfaces';
 import { validate } from 'class-validator';
+import { Notification, NotificationDocument } from './entities/notification.entity';
 
 @Injectable()
 export class AdminService {
@@ -23,7 +24,8 @@ export class AdminService {
     private readonly configService: ConfigService,
     private readonly commonServices: CommonServices,
     private readonly authService: AuthService,
-    @InjectModel(Users.name) private userModel: Model<UsersDocument>
+    @InjectModel(Users.name) private userModel: Model<UsersDocument>,
+    @InjectModel(Notification.name) private notificationModel: Model<NotificationDocument>
   ) {
     this.ADMIN_EMAIL = this.configService.get<string>("ADMIN_EMAIL")
     this.PASSWORD = this.configService.get<string>("PASSWORD")
@@ -110,6 +112,19 @@ export class AdminService {
       const response = new ResponseUserDto(updateUser);
       await validate(response, { whitelist: true });
       return { data: response }
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async notification(dto: NotificationListing) {
+    try {
+      let { pagination, limit } = dto
+      let options = await this.commonServices.setOptions(pagination, limit);
+      let count = await this.notificationModel.countDocuments({});
+      let notification = await this.notificationModel.find({}, {}, options);
+      let response = { count, data: notification }
+      return response
     } catch (error) {
       throw error
     }

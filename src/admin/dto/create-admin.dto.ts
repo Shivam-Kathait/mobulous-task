@@ -32,6 +32,19 @@ export class Listing {
     search: string;
 }
 
+export class NotificationListing {
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional()
+    pagination: string;
+
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional()
+    limit: string;
+
+}
+
 export class UpdateUserStatusDto {
     @ApiProperty({
         description: 'User status',

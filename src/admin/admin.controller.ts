@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { AdminLoginDto, ApprovalDto, Idto, Listing, UpdateUserStatusDto } from './dto/create-admin.dto';
+import { AdminLoginDto, ApprovalDto, Idto, Listing, NotificationListing, UpdateUserStatusDto } from './dto/create-admin.dto';
 import { ApiBearerAuth, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/authentication/guards/roles.guard';
@@ -75,4 +75,19 @@ export class AdminController {
     return await this.adminService.approvalStatus(ID.id, dto);
   }
   
+  /**
+ * Admin notification listing.
+ *
+ * @param {ApprovalDto} dto - DTO containing the listing details.
+ * @returns {Promise<any>} - Result from the admin service .
+ */
+  @ApiBearerAuth("authorization")
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiConsumes('application/json')
+  @ApiOperation({ summary: `Admin notification listing API` })
+  @Get('notification')
+  async notification(@Query() dto: NotificationListing): Promise<any> {
+    return await this.adminService.notification(dto);
+  }
 }
